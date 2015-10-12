@@ -87,52 +87,97 @@ function displayAddressBook(addressBookId) {
                 displayEntry(entryId);
             });
         }
-    )
+    );
 }
 
 function displayEntry(EntryId) {
-    var $table = $('<table></table>');
+    
     getEntry(EntryId).then(
         function(entry){
 
             $app.html('');
             $app.append('<h2>Entry</h2>');
             
+            var $table = $('<table></table>');
+            $app.append($table);
+            
             $table.append('<tr><th>First Name</th><td>' + entry.firstName + '</td></tr>');
             $table.append('<tr><th>Last Name</th><td>' + entry.lastName + '</td></tr>');
             $table.append('<tr><th>Birthday</th><td>' + entry.birthday + '</td></tr>');
-            $app.append($table);
-            console.log(entry.birthday)
+            
+            var $addressTr = $('<tr><th>Addresses</th><td></td></tr>');
+            $table.append($addressTr);
+            
+            var $emailTr = $('<tr><th>Emails</th><td></td></tr>');
+            $table.append($emailTr);
+            
+            var $phoneTr = $('<tr><th>Phones</th><td></td></tr>');
+            $table.append($phoneTr);
+
+   
+            getAddresses(EntryId).then(
+                function(addresses){
+                    if (addresses.length === 0) {
+                        $addressTr.remove();
+                    }
+                    else {
+                        var $td = $addressTr.find('td');
+                        for (var i=0; i< addresses.length; i++) {
+                            var add = addresses[i];
+                            
+                            $td.append('<p class="type">' + add.type + '</p>');
+                            $td.append('<p>' + add.line1 + ', ' + add.line2 + '</p>');
+                            $td.append('<p>' + add.city + ', ' + add.state + ', ' + add.zip + '</p>');
+                            $td.append('<p>' + add.country + '</p>');
+                        }
+                    }
+                }
+            );
+                
+            getEmails(EntryId).then(
+                function(emails){
+                    if (emails.length === 0) {
+                        $emailTr.remove();
+                    }
+                    else {
+                        var $td = $emailTr.find('td');
+                        for (var i=0; i < emails.length; i++) {
+                            var mail = emails[i];
+                            
+                            $td.append('<p class="type">' + mail.type + '</p>');
+                            $td.append('<p>' + mail.email + '</p>');
+                        }
+                    }
+                }    
+            );       
+                
+            getPhones(EntryId).then(
+                function(phones){
+                    if (phones.length === 0) {
+                        $phoneTr.remove();
+                    }
+                    else {
+                        var $td = $phoneTr.find('td');
+                        for (var i=0; i < phones.length; i++) {
+                            var phone = phones[i];
+                            
+                            $td.append('<p class="type">' + phone.type + '</p>');
+                            $td.append('<p>' + phone.phoneNumber + ' (' + phone.phoneType + ')' + '</p>');
+                        }
+                    }    
+                }
+            );
+            //         $table.append('<tr><th>Phone Type</th><td>' + phones.phoneType + '</td></tr>');
+            //         $table.append('<tr><th>Type</th><td>' + phones.type + '</td></tr>');
+            //         $table.append('<tr><th>Phone number</th><td>' + phones.phoneNumber + '</td></tr>');
+            //     });            
         });
         
-    getAddresses(EntryId).then(
-        function(addresses){
-            $table.append('<tr><th>Address</th><td>' + addresses.line1 + addresses.line2 + '</td></tr>');
-            $table.append('<tr><th>City</th><td>' + addresses.city + '</td></tr>');
-            $table.append('<tr><th>State</th><td>' + addresses.state + '</td></tr>');
-            $table.append('<tr><th>Zip</th><td>' + addresses.zip + '</td></tr>');
-            $table.append('<tr><th>Country</th><td>' + addresses.country + '</td></tr>');
-            $app.append($table);
-            console.log(addresses.zip)
-        });
-        
-    getEmails(EntryId).then(
-        function(emails){
-            $table.append('<tr><th>Email Type</th><td>' + emails.type + '</td></tr>');
-            $table.append('<tr><th>Email</th><td>' + emails.email + '</td></tr>');
-            $app.append($table);   
-        });
-        
-    getPhones(EntryId).then(
-        function(phones){
-            $table.append('<tr><th>Phone Type</th><td>' + phones.phoneType + '</td></tr>');
-            $table.append('<tr><th>Type</th><td>' + phones.type + '</td></tr>');
-            $table.append('<tr><th>Phone number</th><td>' + phones.phoneNumber + '</td></tr>');
-        });
+
 }
 // End functions that display views
 
 
 // Start the app by displaying all the addressbooks
-//displayAddressBook();
-displayAddressBooksList();
+displayAddressBook(2);
+//displayAddressBooksList();
