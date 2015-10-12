@@ -49,10 +49,10 @@ function displayAddressBooksList() {
             $app.html(''); // Clear the #app div
             $app.append('<h2>Address Books List</h2>');
             $app.append('<ul>');
-            // var previousPage = $('<button>previous page</button>');
-            // var nextPage = $('<button>next page</button>');
-            // $app.append(previousPage);
-            // $app.append(nextPage);
+            var previousPage = $('<button>previous page</button>');
+            var nextPage = $('<button>next page</button>');
+            $app.append(previousPage);
+            $app.append(nextPage);
             
             addressBooks.forEach(function(ab) {
                 $app.find('ul').append('<li data-id="' + ab.id + '">' + ab.name + '</li>');
@@ -63,10 +63,10 @@ function displayAddressBooksList() {
                 displayAddressBook(addressBookId);
             });
             
-            // nextPage.on('click', function() {
-            //     getAddressBooks(abKey);
-            //     abKey += 1;
-            // })
+            nextPage.on('click', function() {
+                getAddressBooks(abKey);
+                abKey += 1;
+             });
             
         }
     );
@@ -167,17 +167,11 @@ function displayEntry(EntryId) {
                     }    
                 }
             );
-            //         $table.append('<tr><th>Phone Type</th><td>' + phones.phoneType + '</td></tr>');
-            //         $table.append('<tr><th>Type</th><td>' + phones.type + '</td></tr>');
-            //         $table.append('<tr><th>Phone number</th><td>' + phones.phoneNumber + '</td></tr>');
-            //     });            
         });
-        
-
 }
 // End functions that display views
 
 
 // Start the app by displaying all the addressbooks
-displayAddressBook(2);
-//displayAddressBooksList();
+//displayAddressBook(2);
+displayAddressBooksList();
