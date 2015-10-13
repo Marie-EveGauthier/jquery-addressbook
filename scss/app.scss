@@ -1,6 +1,42 @@
 @import "settings";
 @import "foundation";
 
+h2 {
+    margin-left: 1rem;
+}
+
+table {
+    margin: 4rem;
+    margin-top: 2rem;
+}
+
+th.rowName {
+    vertical-align: top;
+    color: #8BC34A; 
+    font-weight: 400;
+}
+
+
+.data {
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: normal;
+    line-height: 1.4;
+    margin-bottom: 0rem;
+    color: black;
+    opacity: .54;
+}
+
+
+p.type {
+    font-size: 1rem;
+    text-transform: capitalize;
+    text-decoration: underline;
+    color: black;
+    opacity: .57;
+    margin-bottom: 0em;
+}
+
 // Or selectively include components
 // @import
 //   "foundation/components/accordion",

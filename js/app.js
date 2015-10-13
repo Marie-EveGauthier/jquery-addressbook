@@ -96,22 +96,22 @@ function displayEntry(EntryId) {
         function(entry){
 
             $app.html('');
-            $app.append('<h2>Entry</h2>');
+            $app.append('<h2>Contact informations</h2>');
             
             var $table = $('<table></table>');
             $app.append($table);
             
-            $table.append('<tr><th>First Name</th><td>' + entry.firstName + '</td></tr>');
-            $table.append('<tr><th>Last Name</th><td>' + entry.lastName + '</td></tr>');
-            $table.append('<tr><th>Birthday</th><td>' + entry.birthday + '</td></tr>');
+            $table.append('<tr><th class="rowName">First Name</th><td class="data">' + entry.firstName + '</td></tr>');
+            $table.append('<tr><th class="rowName">Last Name</th><td class="data">' + entry.lastName + '</td></tr>');
+            $table.append('<tr><th class="rowName">Birthday</th><td class="data">' + entry.birthday + '</td></tr>');
             
-            var $addressTr = $('<tr><th>Addresses</th><td></td></tr>');
+            var $addressTr = $('<tr><th class="rowName">Addresses</th><td></td></tr>');
             $table.append($addressTr);
             
-            var $emailTr = $('<tr><th>Emails</th><td></td></tr>');
+            var $emailTr = $('<tr><th class="rowName">Emails</th><td></td></tr>');
             $table.append($emailTr);
             
-            var $phoneTr = $('<tr><th>Phones</th><td></td></tr>');
+            var $phoneTr = $('<tr><th class="rowName">Phones</th><td></td></tr>');
             $table.append($phoneTr);
 
    
@@ -126,9 +126,9 @@ function displayEntry(EntryId) {
                             var add = addresses[i];
                             
                             $td.append('<p class="type">' + add.type + '</p>');
-                            $td.append('<p>' + add.line1 + ', ' + add.line2 + '</p>');
-                            $td.append('<p>' + add.city + ', ' + add.state + ', ' + add.zip + '</p>');
-                            $td.append('<p>' + add.country + '</p>');
+                            $td.append('<p class="data">' + add.line1 + ', ' + add.line2 + '</p>');
+                            $td.append('<p class="data">' + add.city + ', ' + add.state + ', ' + add.zip + '</p>');
+                            $td.append('<p class="data">' + add.country + '</p>');
                         }
                     }
                 }
@@ -145,7 +145,7 @@ function displayEntry(EntryId) {
                             var mail = emails[i];
                             
                             $td.append('<p class="type">' + mail.type + '</p>');
-                            $td.append('<p>' + mail.email + '</p>');
+                            $td.append('<p class="data">' + mail.email + '</p>');
                         }
                     }
                 }    
@@ -162,7 +162,7 @@ function displayEntry(EntryId) {
                             var phone = phones[i];
                             
                             $td.append('<p class="type">' + phone.type + '</p>');
-                            $td.append('<p>' + phone.phoneNumber + ' (' + phone.phoneType + ')' + '</p>');
+                            $td.append('<p class="data">' + phone.phoneNumber + ' (' + phone.phoneType + ')' + '</p>');
                         }
                     }    
                 }
@@ -174,4 +174,5 @@ function displayEntry(EntryId) {
 
 // Start the app by displaying all the addressbooks
 //displayAddressBook(2);
-displayAddressBooksList();
+//displayAddressBooksList();
+displayEntry(4);
