@@ -4,4 +4,7 @@ $(document).foundation();
 
 
 // Start the app by displaying all the addressbooks
-displayFunctions.displayAddressBooksList(0);
+
+displayFunctions.displayAddressBooksList(0, 5);
+
+

@@ -49,7 +49,7 @@
 	$(document).foundation();
 
 	// Start the app by displaying all the addressbooks
-	displayFunctions.displayAddressBooksList(0);
+	displayFunctions.displayAddressBooksList(0, 5);
 
 
 
@@ -68,10 +68,13 @@
 
 
 
-	// Functions that display things on the screen (views)
-	function displayAddressBooksList(pageNum) {
-	    dataFunctions.getAddressBooks(pageNum).then(
-	        function(addressBooks) {
+	// Function that displays the AddressBooks lists
+	function displayAddressBooksList(pageNum, display) {
+	    dataFunctions.getAddressBooks(pageNum, display).then(
+	        function(results) {
+	           
+	            var addressBooks = results.addressBooks;
+	            var hasNextPage = results.hasNextPage;
 	            
 	            $app.html(''); // Clear the #app div
 	            $app.append('<h2>Address Books List</h2>');
@@ -84,7 +87,7 @@
 	            $app.find('li').on('click', function() {
 	                var addressBookId = $(this).data('id');
 	                console.log(addressBookId);
-	                displayAddressBook(addressBookId,0);
+	                displayAddressBook(addressBookId,0, display);
 	            });
 	            
 	            var previousPage = $('<button>previous page</button>');
@@ -92,34 +95,51 @@
 	            $app.append(previousPage);
 	            $app.append(nextPage);
 	            
+	            //disable first previous page button
+	            
 	            if(pageNum === 0){
 	                previousPage.toggleClass("disabled");
 	            }
 	            
-	            // if(pageNum === //addressBook.length){ //I need to figure out how to calculate the last page number.
-	            //     var nextPage = $('<button disable>previous page</button>');
-	            // }
+	            //disable last next button
+	            
+	            if(!hasNextPage){
+	                nextPage.toggleClass("disabled");
+	            }
+	            
+	            //functionalities of previous and next buttons
 	            
 	            nextPage.on('click', function() {
-	                displayAddressBooksList(pageNum + 1);
+	                displayAddressBooksList(pageNum + 1, display);
 	            });
 	            previousPage.on('click', function() {
-	                displayAddressBooksList(pageNum - 1);
+	                displayAddressBooksList(pageNum - 1, display);
 	            });
 	            
 	        }
 	    );
 	}
 
-	function displayAddressBook(addressBookId,pageNum) {
-	    dataFunctions.getEntries(addressBookId, pageNum).then(
-	        function(entries) {
+	//Function that displays the Entries of a specific Address Book
+
+	function displayAddressBook(addressBookId,pageNum, display) {
+	    dataFunctions.getEntries(addressBookId, pageNum, display).then(
+	        function(results) {
+	            
+	            var entries = results.entries;
+	            var hasNextPage = results.hasNextPage;
+	            
+	            
 	            $app.html('');
+	            
+	            //Button that takes you back to the previous step
 	            var previousStep = $('<button><--</button>');
 	            $app.append(previousStep);
 	            previousStep.on('click', function() {
-	                displayAddressBooksList(0);
+	                displayAddressBooksList(0,display);
 	            });
+	            
+	            //Main content
 	            $app.append('<h2>Address Books Entries</h2>');
 	            $app.append('<ul>');
 	            entries.forEach(function(entry){
@@ -128,9 +148,11 @@
 	            
 	            $app.find('li').on('click', function() {
 	                var entryId = $(this).data('id');
-	                displayEntry(entryId);
+	                displayEntry(entryId, 0, display, addressBookId);
 	            });
 	            
+	            
+	            //Previous and next button - creation and functionality
 	            var previousPage = $('<button>previous page</button>');
 	            var nextPage = $('<button>next page</button>');
 	            $app.append(previousPage);
@@ -143,16 +165,42 @@
 	                displayAddressBook(addressBookId,pageNum - 1);
 	            });
 	            
+	            //disable first previous page button
+	            
+	            if(pageNum === 0){
+	                previousPage.toggleClass("disabled");
+	            }
+	            
+	            //disable last next page button
+	            
+	            if(!hasNextPage){
+	                nextPage.toggleClass("disabled");
+	            }
+	            
+	            
+	            
 	        }
 	    );
 	}
 
-	function displayEntry(EntryId) {
+
+	//function that displays a specific Entry within a specific AddressBook
+
+	function displayEntry(EntryId, pageNum, display, addressBookId) {
 	   
 	   dataFunctions.getEntry(EntryId).then(
 	       function(entry){
-
 	           $app.html('');
+	           console.log(EntryId);
+	           
+	           //Button that takes you back to the previous step
+	            var previousStep = $('<button><--</button>');
+	            $app.append(previousStep);
+	            previousStep.on('click', function() {
+	                displayAddressBook(addressBookId,0,display);
+	            });
+	            
+	            //main content
 	           $app.append('<h2>Entry</h2>');
 	           
 	           var $table = $('<table></table>');
@@ -225,6 +273,7 @@
 	               }
 	           );
 	       });
+	       
 	}
 	// End functions that display views
 
@@ -244,18 +293,47 @@
 	var API_URL = "https://loopback-rest-api-demo-ziad-saab.c9.io/api";
 
 
-
 	// Data retrieval functions
-	function getAddressBooks(skip) {
-	    return $.getJSON(API_URL + '/AddressBooks?filter={"order":"name%20ASC","limit":5,"skip":' + (skip * 5) + '}');
+	function getAddressBooks(pageNum, display) {
+	    return $.getJSON(API_URL + '/AddressBooks?filter={"order":"name%20ASC","limit":' + (display+1) +',"skip":' + (pageNum * display) + '}').then(
+	        function(addressBooks) {
+	            if (addressBooks.length > display) {
+	                var hasNextPage = true;
+	                addressBooks = addressBooks.slice(0, display-1);
+	            }
+	            else {
+	                hasNextPage = false;
+	            }
+	            
+	            return {
+	                hasNextPage: hasNextPage,
+	                addressBooks: addressBooks
+	            };
+	        }
+	    );
 	}
 
 	function getAddressBook(id) {
 	    return $.getJSON(API_URL + '/AddressBooks/' + id);
 	}
 
-	function getEntries(addressBookId, skip) {
-	    return $.getJSON(API_URL + '/AddressBooks/' + addressBookId + '/entries?filter={"order":"lastname%20ASC","limit":5, "skip":' + (skip * 5) + '}');
+	function getEntries(addressBookId, pageNum, display) {
+	    return $.getJSON(API_URL + '/AddressBooks/' + addressBookId + '/entries?filter={"order":"lastname%20ASC","limit":' + display + ', "skip":' + (pageNum * display) + '}').then(
+	        function(entries){
+	            if(entries.length > display){
+	                var hasNextPage=true;
+	                entries = entries.slice(0, display-1);
+	            }
+	            else{
+	                hasNextPage = false;
+	            }
+	            return {
+	                hasNextPage: hasNextPage,
+	                entries: entries
+	            };
+	        }
+	            
+	    );
 	}
 
 	function getEntry(entryId) {
@@ -279,7 +357,7 @@
 	module.exports = {
 	    getAddressBooks: getAddressBooks,
 	    getAddressBook: getAddressBook,
-	    getEntries:getEntries,
+	    getEntries: getEntries,
 	    getEntry: getEntry,
 	    getAddresses: getAddresses,
 	    getEmails: getEmails,

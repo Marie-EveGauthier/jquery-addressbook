@@ -5,18 +5,47 @@ $(document).foundation();
 var API_URL = "https://loopback-rest-api-demo-ziad-saab.c9.io/api";
 
 
-
 // Data retrieval functions
-function getAddressBooks(skip) {
-    return $.getJSON(API_URL + '/AddressBooks?filter={"order":"name%20ASC","limit":5,"skip":' + (skip * 5) + '}');
+function getAddressBooks(pageNum, display) {
+    return $.getJSON(API_URL + '/AddressBooks?filter={"order":"name%20ASC","limit":' + (display+1) +',"skip":' + (pageNum * display) + '}').then(
+        function(addressBooks) {
+            if (addressBooks.length > display) {
+                var hasNextPage = true;
+                addressBooks = addressBooks.slice(0, display-1);
+            }
+            else {
+                hasNextPage = false;
+            }
+            
+            return {
+                hasNextPage: hasNextPage,
+                addressBooks: addressBooks
+            };
+        }
+    );
 }
 
 function getAddressBook(id) {
     return $.getJSON(API_URL + '/AddressBooks/' + id);
 }
 
-function getEntries(addressBookId, skip) {
-    return $.getJSON(API_URL + '/AddressBooks/' + addressBookId + '/entries?filter={"order":"lastname%20ASC","limit":5, "skip":' + (skip * 5) + '}');
+function getEntries(addressBookId, pageNum, display) {
+    return $.getJSON(API_URL + '/AddressBooks/' + addressBookId + '/entries?filter={"order":"lastname%20ASC","limit":' + (display+1) + ', "skip":' + (pageNum * display) + '}').then(
+        function(entries){
+            if(entries.length > display){
+                var hasNextPage=true;
+                entries = entries.slice(0, display-1);
+            }
+            else{
+                hasNextPage = false;
+            }
+            return {
+                hasNextPage: hasNextPage,
+                entries: entries
+            };
+        }
+            
+    );
 }
 
 function getEntry(entryId) {
@@ -40,7 +69,7 @@ function getPhones(entryId) {
 module.exports = {
     getAddressBooks: getAddressBooks,
     getAddressBook: getAddressBook,
-    getEntries:getEntries,
+    getEntries: getEntries,
     getEntry: getEntry,
     getAddresses: getAddresses,
     getEmails: getEmails,

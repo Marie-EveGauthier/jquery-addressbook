@@ -1,6 +1,7 @@
 @import "settings";
 @import "foundation";
 
+
 h2 {
     margin-left: 1rem;
 }
@@ -37,14 +38,23 @@ p.type {
     margin-bottom: 0em;
 }
 
+.disabled{
+    display:none;
+}
+
+section{
+    background-color:pink;
+}
+
 // Or selectively include components
-// @import
+@import
+ "foundation/components/type",
 //   "foundation/components/accordion",
 //   "foundation/components/alert-boxes",
-//   "foundation/components/block-grid",
+"foundation/components/block-grid";
 //   "foundation/components/breadcrumbs",
 //   "foundation/components/button-groups",
-//   "foundation/components/buttons",
+@import "foundation/components/buttons";
 //   "foundation/components/clearing",
 //   "foundation/components/dropdown",
 //   "foundation/components/dropdown-buttons",
@@ -71,7 +81,7 @@ p.type {
 //   "foundation/components/thumbs",
 //   "foundation/components/tooltips",
 //   "foundation/components/top-bar",
-//   "foundation/components/type",
+
 //   "foundation/components/offcanvas",
 //   "foundation/components/visibility";
 
