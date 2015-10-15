@@ -58,8 +58,8 @@ table {
 
 th.rowName {
     vertical-align: top;
-    color: #8BC34A; 
-    font-weight: 400;
+    font-weight: 500;
+    opacity: .87;
 }
 
 
@@ -71,6 +71,10 @@ th.rowName {
     margin-bottom: 0rem;
     color: black;
     opacity: .54;
+}
+
+p.data.country {
+    text-transform: uppercase;
 }
 
 
