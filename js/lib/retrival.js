@@ -34,7 +34,7 @@ function getEntries(addressBookId, pageNum, display) {
         function(entries){
             if(entries.length > display){
                 var hasNextPage=true;
-                entries = entries.slice(0, display-1);
+                entries = entries.slice(0, display - 1);
             }
             else{
                 hasNextPage = false;
